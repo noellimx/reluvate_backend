@@ -54,6 +54,7 @@ See test files for examples of test cases.
 
 # Note
 
+See ```./pokemon/tests/test_template.py``` for example
 
 ## Application Level
 
