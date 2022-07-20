@@ -14,7 +14,7 @@ class TestEndpoints(SimpleTestCase):  # class name should prefix with `Test`
     def setUp(self) -> None:
         self.client = Client()
 
-    def test_some_route(self):  # function name should prefix with `test_`
+    def test_mikecheck(self):  # function name should prefix with `test_`
 
         url = reverse('application')
         endpoint = resolve(url)
