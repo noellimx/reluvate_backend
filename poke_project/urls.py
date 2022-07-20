@@ -15,12 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 
+
+
+def mikecheck_fn(_:HttpRequest):
+    return HttpResponse("copy copy app [pokemon]")
+
+    
 urlpatterns = [
-    path("mikecheck/", lambda _: HttpResponse("copy copy app [pokemon]")),
+    # ex: /polls/
+    path("mikecheck/",
+        mikecheck_fn , name="application"),
     path("admin/", admin.site.urls),
-    path("pokemon/", include("pokemon.endpoints")),
+    path("pokemon/", include("pokemon.endpoints"), name="pokemonss"),
     re_path(r"^auth/", include("djoser.urls.jwt")),
     re_path(r"^auth/", include("djoser.urls")),
     re_path(r"^auth/", include("djoser.urls.authtoken")),
