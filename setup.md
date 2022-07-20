@@ -47,8 +47,9 @@ Example: ```path('pokemon/', include('pokemon.routes'))```
 
 We will be using sqlite3
 
-```python manage.py migrate``` migrate models
-```python manage.py makemigrations``` create snapshots for migration
+Once schema is changed, run the following commands:
+1. ```python manage.py makemigrations``` create snapshots for migration
+2. ```python manage.py migrate``` migrate models
 
 
 # Test
