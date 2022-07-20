@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include,re_path
+from django.http import HttpResponse
 
 urlpatterns = [
+    path('mikecheck/', lambda _ :  HttpResponse("copy copy app [pokemon]")),
     path('admin/', admin.site.urls),
     path('pokemon/', include('pokemon.endpoints')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
