@@ -9,7 +9,7 @@ poke_project
 
 python3
 pipenv
-
+sqlite3
 
 # Setup
 
@@ -29,16 +29,41 @@ Step 4. is required if network config is not set in django-admin
 # Routes
 
 
-# Application level
+## Application level
 
 Write handlers in ```./<app>/views.py```
 Write endpoints in ```./<app>/routes.py```
 
 
-# Project level
+## Project level
 
-## See ```./<project>/urls.py```
+### See ```./<project>/urls.py```
 
 To hook app's URLConf to project, add ```path('<sub_path>/', include('<app>.<route_file>'))``` to ```urlpattern:URLConf```.
 
 Example: ```path('pokemon/', include('pokemon.routes'))```
+
+# Database
+
+We will be using sqlite3
+
+
+# Test
+
+See test files for examples of test cases.
+
+# Note
+
+
+## Application Level
+
+1. Replace file ```./<app>/tests.py``` with folder ```./<app>/tests```
+2. ```touch ./<app>/tests/__init__.py``` identify as package
+3. Test files to prefix with ```test_```
+
+Example ```touch ./<app>/tests/test_models.py```
+
+4. Run tests with ```python manage.py test```, or specific app with ```python manage.py test <app>```
+
+Example ```python manage.py test pokemon```
+
