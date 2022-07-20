@@ -47,12 +47,15 @@ Example: ```path('pokemon/', include('pokemon.routes'))```
 
 We will be using sqlite3
 
+```python manage.py migrate``` migrate models
+```python manage.py makemigrations``` create snapshots for migration
+
 
 # Test
 
 See test files for examples of test cases.
 
-# Note
+## Note
 
 See ```./pokemon/tests/test_template.py``` for example
 

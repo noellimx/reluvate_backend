@@ -1,6 +1,8 @@
-from django.test import SimpleTestCase
+from django.test import TransactionTestCase
+from pokemon.models import DummyModel
 
-
-class TestModels(SimpleTestCase): # class name should prefix with `Test`
+class TestModels(TransactionTestCase): # class name should prefix with `Test`
     def test_some_model(_): # function name should prefix with `test_` 
-        assert(False)
+
+        dummies = DummyModel.objects.all()
+        assert(len(dummies) == 0)
