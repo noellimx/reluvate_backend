@@ -104,8 +104,6 @@ class Test_Story_Login(EndpointTestCase):
         def register():
             response = self.client.post(self.path_register, query_params)
             response_in_json = response.json()
-            print("response_in_json")
-            print(response_in_json)
             assert response.status_code == status.HTTP_201_CREATED
 
             assert response_in_json["username"] == user.username
