@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "djoser",
-    "pokemon","rest_framework_simplejwt"
+    "pokemon",
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [

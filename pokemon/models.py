@@ -9,4 +9,3 @@ class DummyModel(models.Model):
 
     def __init__(self):
         print("DummyModel")
-

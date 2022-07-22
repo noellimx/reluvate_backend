@@ -19,7 +19,8 @@ from django.http import HttpRequest, HttpResponse
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
-    TokenRefreshView,TokenVerifyView
+    TokenRefreshView,
+    TokenVerifyView,
 )
 
 
@@ -35,8 +36,7 @@ urlpatterns = [
     re_path(r"^auth/", include("djoser.urls.jwt")),
     re_path(r"^auth/", include("djoser.urls")),
     re_path(r"^auth/", include("djoser.urls.authtoken")),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-        path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
 ]
