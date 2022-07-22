@@ -13,6 +13,9 @@ class StubUser:
     def set_username(self, username):
         self.username = username
 
+    def set_auth_token(self, auth_token: str):
+        self.auth_token = auth_token
+
 
 def new_user_with_similar_username_and_password():
     user_uuid = uuid.uuid4().hex
@@ -40,7 +43,8 @@ class Test_Story_Login(EndpointTestCase):
         assert self.user1.username is not None
         assert self.user1.password is not None
 
-        self.path_login = f"/auth/users/"
+        self.path_register = f"/auth/users/"
+        self.path_login = f"/auth/token/login"
 
     def test_empty_username_and_password_login(self):
         response = self.client.get("/auth/users/me/")
@@ -50,10 +54,9 @@ class Test_Story_Login(EndpointTestCase):
 
         user = new_user_with_similar_username_and_password()
         query_params = {"username": user.username, "password": user.password}
-        response = self.client.post(self.path_login, query_params)
+        response = self.client.post(self.path_register, query_params)
         response_in_json = response.json()
 
-        print(response_in_json)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response_in_json["password"] == [
             "The password is too similar to the username."
@@ -61,23 +64,36 @@ class Test_Story_Login(EndpointTestCase):
 
     def test_registration_and_token_login(self):
 
-        return
-        query_params = {
-            "username": self.user1.username,
-            "password": self.user1.password,
-        }
-        query_string = f"username={self.user1.username}&password={self.user1.password}"
+        user = self.user1
+        query_params = {"username": user.username, "password": user.password}
+        
+        def register():
+            response = self.client.post(self.path_register, query_params)
+            response_in_json = response.json()
 
-        path = f"/auth/users/"
-        response = self.client.post(path, query_params)
-        print(response.status_code)
-        print(response.headers)
+            print(response.status_code)
+            print(response_in_json)
 
-        print(path)
-        assert response.status_code == status.HTTP_200_OK
+            assert response.status_code == status.HTTP_201_CREATED
 
-        # response = self.client.post("/auth/token/login/", query_string)
-        # print(response.status_code)
-        # print(response.headers)
+            assert response_in_json['username'] == user.username
+        
+        register()
 
-        # assert(response.status_code == status.HTTP_200_OK)
+        def login():
+            response = self.client.post(self.path_login, query_params)
+
+            response_in_json = response.json()
+
+            assert response.status_code == status.HTTP_200_OK
+            assert response_in_json["auth_token"]
+
+
+            auth_token = response_in_json["auth_token"]
+            user.set_auth_token(auth_token)
+
+        login()
+            
+
+
+
