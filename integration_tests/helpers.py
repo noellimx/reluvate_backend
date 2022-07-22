@@ -1,8 +1,8 @@
-from django.test import SimpleTestCase
+from django.test import TransactionTestCase
 
 from django.test import Client
 
 
-class EndpointTestCase(SimpleTestCase):
+class EndpointTestCase(TransactionTestCase):
     def setUp(self) -> None:
         self.client = Client()

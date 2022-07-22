@@ -24,13 +24,11 @@ class TestURLConf_App_Pokemon(EndpointTestCase):
     def test_hello(self):
         url = reverse("pokemon:hello")
         endpoint = resolve(url)
-        print(endpoint.route)
         assert endpoint.route == "pokemon/hello/"
 
         response = self.client.get("/" + endpoint.route)
 
         assert response.status_code == status.HTTP_200_OK
-        print(response.headers["Content-Type"] == "text/html")
         assert (
             response.content
             == b"Hello world from project [poke_project], app [pokemon]"
