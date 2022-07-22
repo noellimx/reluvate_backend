@@ -42,7 +42,8 @@ class Test_Story_Login(EndpointTestCase):
 
 
         self.path_register = f"/auth/users/"
-        self.path_login = f"/auth/token/login"
+        self.path_login_using_token = f"/auth/token/login/"
+        self.path_login_using_jwt = f'/jwt/create/'
 
     def test_empty_username_and_password_login(self):
         response = self.client.get("/auth/users/me/")
@@ -78,7 +79,7 @@ class Test_Story_Login(EndpointTestCase):
         register()
 
         def login():
-            response = self.client.post(self.path_login, query_params)
+            response = self.client.post(self.path_login_using_token, query_params)
 
             response_in_json = response.json()
 
@@ -92,4 +93,39 @@ class Test_Story_Login(EndpointTestCase):
             
 
 
+
+    def test_registration_and_jwt_login(self):
+
+        return 
+        user = new_user()
+        assert user.username is not None
+        assert user.password is not None
+
+        query_params = {"username": user.username, "password": user.password}
+        
+        def register():
+            response = self.client.post(self.path_register, query_params)
+            response_in_json = response.json()
+
+            assert response.status_code == status.HTTP_201_CREATED
+
+            assert response_in_json['username'] == user.username
+        
+        register()
+
+        def login():
+            response = self.client.post(self.path_login_using_jwt, query_params)
+
+            # response_in_json = response.json()
+
+            print(response.status_code)
+            assert response.status_code == status.HTTP_200_OK
+            return
+            assert response_in_json["auth_token"]
+
+            auth_token = response_in_json["auth_token"]
+            user.set_auth_token(auth_token)
+
+        login()
+            
 

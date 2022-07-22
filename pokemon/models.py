@@ -4,4 +4,9 @@ from django.db import models
 
 
 class DummyModel(models.Model):
+
     number = models.IntegerField(null=False)
+
+    def __init__(self):
+        print("DummyModel")
+
