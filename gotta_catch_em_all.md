@@ -3,7 +3,36 @@ Task:
 This project explores your abilities in full-stack development and cloud deployment.
 The expected time to complete the task is 24 hours
 Your assignment is to create a React frontend and Django backend web application that:
-[x] 1. Has user authentication (login/sign-up) mechanisms
+[x] 1. Has user authentication (login/sign-up) mechanisms [#1]
+    [x] Registration
+        Method: POST
+        Path: /auth/users/
+        Content-Type: application/x-www-form-urlencoded
+        Params: username, password
+
+        [#1-000001]
+        Return[If User Created]: {
+            Status Code : "201"
+        } 
+    [x] Obtain JWT
+        Method: POST
+        Path: /api/token/
+        Content-Type: application/x-www-form-urlencoded
+        Params: username, password
+
+        [#1-000002]
+        Return[If User is Valid]: { Content-Type: "application/json", Status Code : "200", Body : <refresh>, <access> }
+
+    [x] Simple Validation
+        Method: POST
+        Path: /pokemon/is-my-access-token-valid/
+        Header: Authorization : Bearer <jwt>
+
+        [#1-000003]
+        Return[If Token is Valid]: { Status Code : "200" }
+
+
+
 [ ] 2. Allows users to view the current portfolio of pokemon they own and their stats
 [ ] 3. Allows users to add newly captured pokemon to their portfolio, and remove pokemon
 from their portfolio
