@@ -11,7 +11,11 @@ curl -X POST http://127.0.0.1:8000/auth/token/login/ --data 'username=djoser&pas
 curl -X POST http://127.0.0.1:8000/auth/users/ --data 'username=djoser2&password=alpine12'
 
 
-
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username": "djoser", "password": "alpine12"}' \
+  http://localhost:8000/api/token/
 
 
 

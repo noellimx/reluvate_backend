@@ -13,8 +13,11 @@ class StubUser:
     def set_username(self, username):
         self.username = username
 
-    def set_auth_token(self, auth_token: str):
+    def set_token_auth(self, auth_token: str):
         self.auth_token = auth_token
+
+    def set_token_jwt_access(self, jwt_access_token: str):
+        self.jwt = jwt_access_token
 
 
 def new_user_with_similar_username_and_password():
@@ -29,7 +32,7 @@ def new_user_with_similar_username_and_password():
 
 def new_user():
     user_uuid_user = uuid.uuid4().hex
-    user_uuid_password = uuid.uuid4().hex
+    user_uuid_password = uuid.uuid4().hex[:6]
     user = StubUser()
 
     user.set_password(f"password{user_uuid_user}")
@@ -39,10 +42,10 @@ def new_user():
 
 class Test_Story_Login(EndpointTestCase):
     def setUp(self) -> None:
-
+        
         self.path_register = f"/auth/users/"
         self.path_login_using_token = f"/auth/token/login/"
-        self.path_login_using_jwt = f"/jwt/create/"
+        self.path_login_using_jwt = f"/api/token/"
 
     def test_empty_username_and_password_login(self):
         response = self.client.get("/auth/users/me/")
@@ -86,13 +89,12 @@ class Test_Story_Login(EndpointTestCase):
             assert response_in_json["auth_token"]
 
             auth_token = response_in_json["auth_token"]
-            user.set_auth_token(auth_token)
+            user.set_token_auth(auth_token)
 
         login()
 
     def test_registration_and_jwt_login(self):
 
-        return
         user = new_user()
         assert user.username is not None
         assert user.password is not None
@@ -102,24 +104,30 @@ class Test_Story_Login(EndpointTestCase):
         def register():
             response = self.client.post(self.path_register, query_params)
             response_in_json = response.json()
-
+            print("response_in_json")
+            print(response_in_json)
             assert response.status_code == status.HTTP_201_CREATED
 
             assert response_in_json["username"] == user.username
 
         register()
+        
 
         def login():
-            response = self.client.post(self.path_login_using_jwt, query_params)
-
+            response = self.client.post(self.path_login_using_jwt, query_params, "application/json")
+            
             # response_in_json = response.json()
 
             print(response.status_code)
             assert response.status_code == status.HTTP_200_OK
-            return
-            assert response_in_json["auth_token"]
 
-            auth_token = response_in_json["auth_token"]
-            user.set_auth_token(auth_token)
+            response_in_json = response.json()
+            assert response_in_json["access"]
+
+
+            jwt_access_token = response_in_json["access"]
+            user.set_token_jwt_access(jwt_access_token)
+
+            assert response_in_json["refresh"]
 
         login()
