@@ -1,9 +1,9 @@
-from random import randint
 from urllib import response
 from integration_tests.helpers import EndpointTestCase
 import uuid
 
 from rest_framework import status
+import jwt
 
 
 class StubUser:
@@ -17,7 +17,7 @@ class StubUser:
         self.auth_token = auth_token
 
     def set_token_jwt_access(self, jwt_access_token: str):
-        self.jwt = jwt_access_token
+        self.jwt_access_token = jwt_access_token
 
 
 def new_user_with_similar_username_and_password():
@@ -42,10 +42,11 @@ def new_user():
 
 class Test_Story_Login(EndpointTestCase):
     def setUp(self) -> None:
-        
-        self.path_register = f"/auth/users/"
-        self.path_login_using_token = f"/auth/token/login/"
-        self.path_login_using_jwt = f"/api/token/"
+
+        self.path_register = "/auth/users/"
+        self.path_login_using_token = "/auth/token/login/"
+        self.path_login_using_jwt = "/api/token/"
+        self.path_check_access_jwt_valid = "/pokemon/is-my-access-token-valid/"
 
     def test_empty_username_and_password_login(self):
         response = self.client.get("/auth/users/me/")
@@ -109,11 +110,12 @@ class Test_Story_Login(EndpointTestCase):
             assert response_in_json["username"] == user.username
 
         register()
-        
 
         def login():
-            response = self.client.post(self.path_login_using_jwt, query_params, "application/json")
-            
+            response = self.client.post(
+                self.path_login_using_jwt, query_params, "application/json"
+            )
+
             # response_in_json = response.json()
 
             print(response.status_code)
@@ -122,10 +124,32 @@ class Test_Story_Login(EndpointTestCase):
             response_in_json = response.json()
             assert response_in_json["access"]
 
-
             jwt_access_token = response_in_json["access"]
             user.set_token_jwt_access(jwt_access_token)
 
+            jwt_access_token_decoded = jwt.decode(
+                jwt_access_token, options={"verify_signature": False}
+            )
+
+            assert jwt_access_token_decoded["user_id"]
             assert response_in_json["refresh"]
 
         login()
+
+        def check_access_token():
+            assert user.jwt_access_token is not None
+
+            access_token = user.jwt_access_token
+
+            header_authorization_value = "JWT " + access_token
+            headers = {"HTTP_AUTHORIZATION": header_authorization_value}
+
+            response = self.client.post(
+                self.path_check_access_jwt_valid,
+                content_type="application/json",
+                **headers,
+            )
+
+            assert response.status_code == status.HTTP_200_OK
+
+        check_access_token()

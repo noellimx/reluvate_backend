@@ -11,11 +11,21 @@ curl -X POST http://127.0.0.1:8000/auth/token/login/ --data 'username=djoser&pas
 curl -X POST http://127.0.0.1:8000/auth/users/ --data 'username=djoser2&password=alpine12'
 
 
+
+JWT VERIFY ACCESS TOKEN
 curl \
   -X POST \
   -H "Content-Type: application/json" \
   -d '{"username": "djoser", "password": "alpine12"}' \
   http://localhost:8000/api/token/
+
+JWT REFRESH ACCESS TOKEN
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3BrIjoxLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImNvbGRfc3R1ZmYiOiLimIMiLCJleHAiOjIzNDU2NywianRpIjoiZGUxMmY0ZTY3MDY4NDI3ODg5ZjE1YWMyNzcwZGEwNTEifQ.aEoAYkSJjoWH1boshQAaTkf8G3yn0kapko6HFRt7Rh4"}' \
+  http://localhost:8000/api/token/refresh/
+
 
 
 
