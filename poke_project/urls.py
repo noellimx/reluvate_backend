@@ -18,17 +18,15 @@ from django.urls import path, include, re_path
 from django.http import HttpRequest, HttpResponse
 
 
-
-def mikecheck_fn(_:HttpRequest):
+def mikecheck_fn(_: HttpRequest):
     return HttpResponse("copy copy app [pokemon]")
 
-    
+
 urlpatterns = [
     # ex: /polls/
-    path("mikecheck/",
-        mikecheck_fn , name="application"),
+    path("mikecheck/", mikecheck_fn, name="application"),
     path("admin/", admin.site.urls),
-    path("pokemon/", include("pokemon.endpoints"), name="pokemonss"),
+    path("pokemon/", include("pokemon.endpoints")),
     re_path(r"^auth/", include("djoser.urls.jwt")),
     re_path(r"^auth/", include("djoser.urls")),
     re_path(r"^auth/", include("djoser.urls.authtoken")),

@@ -1,4 +1,6 @@
 from django.urls import path
 from . import views as handlers
 
-urlpatterns = [path("hello/", handlers.say_hello)]
+
+app_name = "pokemon"
+urlpatterns = [path("hello/", handlers.say_hello, name="hello")]
