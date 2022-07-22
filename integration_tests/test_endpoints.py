@@ -1,18 +1,10 @@
-from urllib import response
-from django.test import SimpleTestCase
-from pokemon.models import DummyModel
 from rest_framework import status
 
 from poke_project.urls import mikecheck_fn
 
 from django.urls import reverse, resolve
 
-from django.test import Client
-
-
-class EndpointTestCase(SimpleTestCase):
-    def setUp(self) -> None:
-        self.client = Client()
+from integration_tests.helpers import EndpointTestCase
 
 
 class TestURLConf_MikeCheck(EndpointTestCase):  # class name should prefix with `Test`
@@ -29,7 +21,7 @@ class TestURLConf_MikeCheck(EndpointTestCase):  # class name should prefix with 
 
 
 class TestURLConf_App_Pokemon(EndpointTestCase):
-    def test_some(self):
+    def test_hello(self):
         url = reverse("pokemon:hello")
         endpoint = resolve(url)
         print(endpoint.route)
