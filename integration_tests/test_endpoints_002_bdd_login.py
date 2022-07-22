@@ -27,7 +27,7 @@ def new_user_with_similar_username_and_password():
     return user
 
 
-def new_user_1():
+def new_user():
     user_uuid_user = uuid.uuid4().hex
     user_uuid_password = uuid.uuid4().hex
     user = StubUser()
@@ -39,9 +39,7 @@ def new_user_1():
 
 class Test_Story_Login(EndpointTestCase):
     def setUp(self) -> None:
-        self.user1 = new_user_1()
-        assert self.user1.username is not None
-        assert self.user1.password is not None
+
 
         self.path_register = f"/auth/users/"
         self.path_login = f"/auth/token/login"
@@ -63,16 +61,15 @@ class Test_Story_Login(EndpointTestCase):
         ]
 
     def test_registration_and_token_login(self):
+        user = new_user()
+        assert user.username is not None
+        assert user.password is not None
 
-        user = self.user1
         query_params = {"username": user.username, "password": user.password}
         
         def register():
             response = self.client.post(self.path_register, query_params)
             response_in_json = response.json()
-
-            print(response.status_code)
-            print(response_in_json)
 
             assert response.status_code == status.HTTP_201_CREATED
 
@@ -87,7 +84,6 @@ class Test_Story_Login(EndpointTestCase):
 
             assert response.status_code == status.HTTP_200_OK
             assert response_in_json["auth_token"]
-
 
             auth_token = response_in_json["auth_token"]
             user.set_auth_token(auth_token)
