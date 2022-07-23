@@ -26,3 +26,14 @@ class Pokedex(models.Model):
     type = models.CharField(
         choices=PokeTypes.choices, max_length=255, default=PokeTypes.NONE
     )
+
+
+class GuessGame(models.Model):
+    class Tried(models.IntegerChoices):
+        NOT_YET = 0
+        ONCE = 1
+        TWICE = 2
+
+    target = models.IntegerField()
+    tried = models.IntegerField(choices=Tried.choices, default=Tried.NOT_YET)
+    trainer = models.CharField(max_length=255)

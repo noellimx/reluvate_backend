@@ -1,6 +1,5 @@
 from urllib import response
 
-from django import http
 from integration_tests.helpers import EndpointTestCase
 
 
@@ -62,6 +61,9 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
         header_authorization_value = "JWT " + self.user.jwt_access_token
         headers = {"HTTP_AUTHORIZATION": header_authorization_value}
 
-        response = self.client.get(self.path_how_many_tries_already, **headers)
-
+        response = self.client.get(self.path_how_many_tries_already, {}, **headers)
+        print(response.status_code)
+        print(response.headers)
         assert response.status_code == status.HTTP_200_OK
+        assert response.headers["Content-Type"] == "application/json"
+        assert response.json()["tried"] == 0
