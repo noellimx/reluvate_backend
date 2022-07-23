@@ -1,49 +1,24 @@
+from urllib import response
 from integration_tests.helpers import EndpointTestCase
-import uuid
+
 
 from rest_framework import status
 import jwt
 
 
-from .stub import StubUser, new_user
+from .stub import new_user
 
-
-def new_user_with_similar_username_and_password():
-    user_uuid = uuid.uuid4().hex
-
-    user = StubUser()
-    user.set_password(f"password{user_uuid}")
-    user.set_username(f"user{user_uuid}")
-
-    return user
-
-
-
-
-
+target_path = {
+    "register" : "/auth/users/"
+}
 class Test_Story_Login(EndpointTestCase):
     def setUp(self) -> None:
 
-        self.path_register = "/auth/users/"
+        self.path_register = target_path["register"]
         self.path_login_using_token = "/auth/token/login/"
         self.path_login_using_jwt = "/api/token/"
         self.path_check_access_jwt_valid = "/pokemon/is-my-access-token-valid/"
 
-    def test_empty_username_and_password_login(self):
-        response = self.client.get("/auth/users/me/")
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-    def test_register_with_too_similar_credentials(self):
-
-        user = new_user_with_similar_username_and_password()
-        query_params = {"username": user.username, "password": user.password}
-        response = self.client.post(self.path_register, query_params)
-        response_in_json = response.json()
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response_in_json["password"] == [
-            "The password is too similar to the username."
-        ]
 
     def test_registration_and_token_login(self):
         user = new_user()
