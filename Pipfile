@@ -8,6 +8,9 @@ django = "*"
 djoser = "*"
 djangorestframework-simplejwt = "*"
 djangorestframework = "*"
+django-extensions = "*"
+pyparsing = "*"
+pydot = "*"
 
 [dev-packages]
 autopep8 = "*"

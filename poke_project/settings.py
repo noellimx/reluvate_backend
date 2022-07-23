@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "djoser",
     "pokemon",
     "rest_framework_simplejwt",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -139,4 +140,14 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ["JWT"],
+}
+
+
+
+
+""" django-extensions"""
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
 }
