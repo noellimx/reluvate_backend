@@ -105,13 +105,13 @@ class Test_Story_Login(EndpointTestCase):
         def register():
             response = self.client.post(self.path_register, query_params)
             response_in_json = response.json()
-            assert response.status_code == status.HTTP_201_CREATED #[#1-000001]
+            assert response.status_code == status.HTTP_201_CREATED  # [#1-000001]
 
             assert response_in_json["username"] == user.username
 
         register()
 
-        def login(): #[#1-000002]
+        def login():  # [#1-000002]
             response = self.client.post(
                 self.path_login_using_jwt, query_params, "application/json"
             )
@@ -133,7 +133,7 @@ class Test_Story_Login(EndpointTestCase):
 
         login()
 
-        def check_access_token(): #[#1-000003]
+        def check_access_token():  # [#1-000003]
             assert user.jwt_access_token is not None
 
             access_token = user.jwt_access_token

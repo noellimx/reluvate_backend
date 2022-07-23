@@ -1,11 +1,28 @@
 from django.db import models
 
-# Create your models here.
-
 
 class DummyModel(models.Model):
 
     number = models.IntegerField(null=False)
 
-    def __init__(self):
-        print("DummyModel")
+
+class Pokedex(models.Model):
+    class PokeTypes(models.TextChoices):
+        ELECTRIC = "Electric"
+        FIGHTING = "Fighting"
+        FIRE = "Fire"
+        GRASS = "Grass"
+        GROUND = "Ground"
+        NORMAL = "Normal"
+        PSYCHIC = "Psychic"
+        WATER = "Water"
+        ROCK = "Rock"
+        NONE = "None"
+
+    pokename = models.CharField(max_length=255)
+    health_point = models.IntegerField()
+    attack = models.IntegerField()
+    defense = models.IntegerField()
+    type = models.CharField(
+        choices=PokeTypes.choices, max_length=255, default=PokeTypes.NONE
+    )

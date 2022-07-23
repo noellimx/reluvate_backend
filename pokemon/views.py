@@ -19,7 +19,6 @@ a = auth_.JWTAuthentication()
 
 def is_access_token_valid(request: HttpRequest) -> HttpResponse:
 
-    print("[is_access_token_valid]")
     (user, _) = a.authenticate(request)
 
     if user is not None:
