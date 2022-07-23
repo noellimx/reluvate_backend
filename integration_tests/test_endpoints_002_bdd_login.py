@@ -6,6 +6,7 @@ import jwt
 
 
 from .stub import StubUser, new_user
+from .targets import target_path
 
 
 def new_user_with_similar_username_and_password():
@@ -18,16 +19,12 @@ def new_user_with_similar_username_and_password():
     return user
 
 
-
-
-
 class Test_Story_Login(EndpointTestCase):
     def setUp(self) -> None:
-
-        self.path_register = "/auth/users/"
-        self.path_login_using_token = "/auth/token/login/"
-        self.path_login_using_jwt = "/api/token/"
-        self.path_check_access_jwt_valid = "/pokemon/is-my-access-token-valid/"
+        self.path_register = target_path["register"]
+        self.path_login_using_token = target_path["login_using_token"]
+        self.path_login_using_jwt = target_path["login_using_jwt"]
+        self.path_check_access_jwt_valid = target_path["check_access_jwt_valid"]
 
     def test_empty_username_and_password_login(self):
         response = self.client.get("/auth/users/me/")

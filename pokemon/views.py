@@ -19,9 +19,28 @@ a = auth_.JWTAuthentication()
 
 def is_access_token_valid(request: HttpRequest) -> HttpResponse:
 
-    (user, _) = a.authenticate(request)
+    try:
+        (user, _) = a.authenticate(request)
 
-    if user is not None:
-        return HttpResponse(status=200)
+        print("is acces tk v")
 
-    return HttpResponse(status=501)
+        print(user)
+        if user is not None:
+            return HttpResponse(status=200)
+    except:
+        pass
+
+    return HttpResponse(status=401)
+
+
+def how_many_tries_already(request: HttpRequest) -> HttpResponse:
+
+    try:
+        (user, _) = a.authenticate(request)
+        if user is not None:
+            return HttpResponse(status=200)
+    except:
+        return HttpResponse(status=401)
+
+
+    return HttpResponse(status = 400)

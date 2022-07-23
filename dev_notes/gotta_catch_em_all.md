@@ -26,7 +26,7 @@ Your assignment is to create a React frontend and Django backend web application
     [x] Simple Validation
         Method: POST
         Path: /pokemon/is-my-access-token-valid/
-        Header: Authorization : Bearer <jwt>
+        Header: Authorization : JWT <jwt>
 
         [#1-000003]
         Return[If Token is Valid]: { Status Code : "200" }

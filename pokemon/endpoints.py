@@ -8,6 +8,11 @@ urlpatterns = [
     path(
         "is-my-access-token-valid/",
         handlers.is_access_token_valid,
-        name="is-my-token-valid",
+        name="is-my-access-token-valid",
+    ),
+    path(
+        "how-many-tries-already/",
+        handlers.how_many_tries_already,
+        name="how-many-tries-already",
     ),
 ]
