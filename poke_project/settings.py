@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+import sys
+
+# toggle for non-random tests
+IN_TEST_ENVIRONMENT = len(sys.argv) > 1 and sys.argv[1] == "test"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

@@ -15,4 +15,5 @@ urlpatterns = [
         handlers.how_many_tries_already,
         name="how-many-tries-already",
     ),
+    path("guess/", handlers.guess, name="guess"),
 ]
