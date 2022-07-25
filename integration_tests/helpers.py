@@ -12,5 +12,4 @@ class EndpointTestCase(ApplicationStartupTestCase):
         self.client = Client()
 
 
-ORACLE_TARGET = 99 # fixed guess number
-
+ORACLE_TARGET = 99  # fixed guess number

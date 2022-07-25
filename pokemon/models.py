@@ -2,6 +2,7 @@ from django.db import models
 
 from django.conf import settings
 
+
 class DummyModel(models.Model):
 
     number = models.IntegerField(null=False)
@@ -42,4 +43,4 @@ class GuessGame(models.Model):
 
 class Pokemon(models.Model):
     trainer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    pokedex_id = models.IntegerField()
+    pokedex_id = models.ForeignKey(Pokedex, on_delete=models.CASCADE)

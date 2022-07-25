@@ -10,11 +10,8 @@ from pokemon.views import guess
 from .stub import new_user
 
 from .targets import target_path
-from.helpers import ORACLE_TARGET
+from .helpers import ORACLE_TARGET
 import json
-
-
-
 
 
 class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
@@ -72,7 +69,6 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
         initial_state = 0
 
         def initial_state_user_tried_0_times():
-
 
             response = self.client.get(self.path_how_many_tries_already, {}, **headers)
             assert response.status_code == status.HTTP_200_OK
@@ -181,8 +177,8 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
 
             assert response.json()["tried"] == initial_state
             assert response.status_code == status.HTTP_200_OK
-        correct_guess_should_reset_tried_to_initial()
 
+        correct_guess_should_reset_tried_to_initial()
 
         def some_wrong_guess_then_correct_should_reset_tried_to_initial():
             wrong_guess = 2356236
@@ -205,5 +201,5 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
             )
             assert response.json()["tried"] == initial_state
             assert response.status_code == status.HTTP_200_OK
-        
+
         some_wrong_guess_then_correct_should_reset_tried_to_initial()

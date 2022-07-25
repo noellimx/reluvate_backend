@@ -1,14 +1,16 @@
 from random import randint
 from django.http import HttpRequest, HttpResponse, JsonResponse
-
+from rest_framework import status
 from rest_framework_simplejwt import authentication as auth_
 from pokemon.models import GuessGame, Pokedex, Pokemon
+from django.core import serializers
 
 import json
 
 from django.conf import settings
 
 from integration_tests.helpers import ORACLE_TARGET
+
 # TODO New class for game logic
 
 low = 0
@@ -57,7 +59,9 @@ def how_many_tries_already(request: HttpRequest) -> HttpResponse:
     try:
         (user, _) = a.authenticate(request)
 
-        game, _ = GuessGame.objects.get_or_create(trainer=user, defaults ={"target":random_guessing_number_target()})
+        game, _ = GuessGame.objects.get_or_create(
+            trainer=user, defaults={"target": random_guessing_number_target()}
+        )
 
         data = {"tried": game.tried}
 
@@ -93,7 +97,9 @@ def guess(request: HttpRequest) -> HttpResponse:
 
             body_in_json = json.loads(request.body)
 
-            game, _ = GuessGame.objects.get_or_create(trainer=user, defaults ={"target":random_guessing_number_target()})
+            game, _ = GuessGame.objects.get_or_create(
+                trainer=user, defaults={"target": random_guessing_number_target()}
+            )
 
             if "guess" in body_in_json:
                 guess = body_in_json["guess"]
@@ -116,24 +122,39 @@ def guess(request: HttpRequest) -> HttpResponse:
         except Exception as err:
             print("[guess] Error")
             print(err)
-            return JsonResponse({"err" : str(err)},status=400)
+            return JsonResponse({"err": str(err)}, status=400)
     else:
-        return JsonResponse(status=501)
+        return JsonResponse({}, status=501)
 
+
+def owned_pokemon(request: HttpRequest) -> HttpResponse:
+    print("[owned_pokemon]")
+    if request.method == "GET":
+        try:
+            (user, _) = a.authenticate(request)
+
+            trained_pokemons = Pokemon.objects.filter(trainer=user)
+
+            data = {"pokemons": serializers.serialize("json", trained_pokemons)}
+
+            return JsonResponse(data, status=200)
+        except Exception as err:
+            print(err)
+            return JsonResponse({},status=400)
+    return JsonResponse(status=500)
 
 
 
 def unowned_pokemon(request: HttpRequest) -> HttpResponse:
-    if request.method == "GET":
-        try:
-            (user, _) = a.authenticate(request)
-            username = user.username
+    # if request.method == "GET":
+    #     try:
+    #         (user, _) = a.authenticate(request)
 
-            game, _ = Pokedex.objects.get(trainer=user, defaults ={"target":random_guessing_number_target()})
+    #         trained_pokemons = Pokemon.objects.all(trainer=user)
 
+    #         data = {"pokemons": serializers.serialize("json", trained_pokemons)}
 
-            data = {"tried": game.tried}
-
-            return JsonResponse(data)
-        except:
-            return JsonResponse(status=400)
+    #         return JsonResponse(data, status=200)
+    #     except:
+    #         return JsonResponse(status=400)
+    return JsonResponse(status=500)
