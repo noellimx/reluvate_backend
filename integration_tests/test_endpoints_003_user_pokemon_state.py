@@ -79,7 +79,35 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
 
             response_in_json = response.json()
 
+            pokemons = json.loads(response_in_json["pokemons"])
+
+            assert len(pokemons) == 0
+
         owned_pokemon_should_be_none()
+
+        initial_state = 0
+        def guess_correct():
+            correct_guess = ORACLE_TARGET
+            d = {"guess": correct_guess}
+
+            response = self.client.post(
+                self.path_guess,
+                data=json.dumps(d),
+                content_type="application/json",
+                **headers
+            )
+
+            response_in_json = response.json()
+            assert response_in_json["tried"] == initial_state
+            assert response.status_code == status.HTTP_200_OK
+
+            assert response_in_json["reply"] == "hit"
+
+            
+
+            
+
+        guess_correct()
         return
 
         def unowned_pokemon_should_be_all_pokemons():

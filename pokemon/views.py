@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework_simplejwt import authentication as auth_
 from pokemon.models import GuessGame, Pokedex, Pokemon
 from django.core import serializers
+from django.db.models import Q
 
 import json
 
@@ -101,12 +102,14 @@ def guess(request: HttpRequest) -> HttpResponse:
                 trainer=user, defaults={"target": random_guessing_number_target()}
             )
 
+            reply = ""
             if "guess" in body_in_json:
                 guess = body_in_json["guess"]
                 if type(guess) != int:
                     pass
                 elif game.target == guess:
                     game.tried = 0
+                    reply = "hit"
                     # TODO reward service
                 else:
                     game.tried += 1
@@ -115,7 +118,7 @@ def guess(request: HttpRequest) -> HttpResponse:
                         # TODO reward service
                 game.save()
 
-            data = {"tried": game.tried}
+            data = {"tried": game.tried, "reply" : reply}
 
             return JsonResponse(data)
 
@@ -136,7 +139,8 @@ def owned_pokemon(request: HttpRequest) -> HttpResponse:
             trained_pokemons = Pokemon.objects.filter(trainer=user)
 
             data = {"pokemons": serializers.serialize("json", trained_pokemons)}
-
+            print(len(data["pokemons"]))
+            print("len(data)")
             return JsonResponse(data, status=200)
         except Exception as err:
             print(err)
@@ -146,15 +150,18 @@ def owned_pokemon(request: HttpRequest) -> HttpResponse:
 
 
 def unowned_pokemon(request: HttpRequest) -> HttpResponse:
-    # if request.method == "GET":
-    #     try:
-    #         (user, _) = a.authenticate(request)
+    print("[unowned_pokemon]")
+    if request.method == "GET":
+        try:
+            (user, _) = a.authenticate(request)
 
-    #         trained_pokemons = Pokemon.objects.all(trainer=user)
+            trained_pokemons = Pokemon.objects.filter(~Q(trainer=user))
 
-    #         data = {"pokemons": serializers.serialize("json", trained_pokemons)}
+            data = {"pokemons": serializers.serialize("json", trained_pokemons)}
 
-    #         return JsonResponse(data, status=200)
-    #     except:
-    #         return JsonResponse(status=400)
+            return JsonResponse(data, status=200)
+        except Exception as err:
+            print(err)
+            return JsonResponse({},status=400)
     return JsonResponse(status=500)
+
