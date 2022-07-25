@@ -58,7 +58,11 @@ def is_access_token_valid(request: HttpRequest) -> HttpResponse:
     return HttpResponse(status=401)
 
 
+def new_prize_pokemon():
+    pokedex = Pokedex.objects.order_by("?").first()
+    prize = Pokemon.objects.create(pokedex=pokedex)
 
+    return prize
 def get_game_of_user(user: settings.AUTH_USER_MODEL):
 
     game = None
@@ -66,10 +70,7 @@ def get_game_of_user(user: settings.AUTH_USER_MODEL):
         game = GuessGame.objects.get(trainer=user)
     except:
         target = random_guessing_number_target()
-        pokedex = Pokedex.objects.order_by("?").first()
-
-        print(f"pokedex {pokedex.id}")
-        prize = Pokemon.objects.create(pokedex=pokedex)
+        prize = new_prize_pokemon()
         print(f"prize {prize.id}")
         game = GuessGame.objects.create(
             trainer=user, prize=prize, target=target
@@ -119,6 +120,8 @@ def guess(request: HttpRequest) -> HttpResponse:
             game = get_game_of_user(user)
 
             reply = ""
+            rewarded_prize = None
+            next_prize = None
             if "guess" in body_in_json:
                 guess = body_in_json["guess"]
                 if type(guess) != int:
@@ -127,14 +130,29 @@ def guess(request: HttpRequest) -> HttpResponse:
                     game.tried = 0
                     reply = "hit"
                     # TODO reward service
+
+                    # set trainer of prize to owner
+                    print("asdf")
+                    print(type(game.prize))
+                    game.prize.trainer = user
+                    game.prize.save()
+
+                    rewarded_prize = json.dumps(PokemonSerializer(game.prize).data)
+
+                    # update with new random pokemon
+                    prize = new_prize_pokemon()
+
+                    game.prize = prize
+                    game.save()
+
+                    next_prize = json.dumps(PokemonSerializer(game.prize).data)
                 else:
                     game.tried += 1
                     if game.tried == 3:
                         game.tried = 0
-                        # TODO reward service
                 game.save()
 
-            data = {"tried": game.tried, "reply": reply}
+            data = {"tried": game.tried, "reply": reply, "prize_next" : next_prize, "prize_rewarded" :rewarded_prize}
 
             return JsonResponse(data)
 

@@ -82,8 +82,7 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
             assert response_in_json["prize"]
 
             prize = json.loads(response_in_json["prize"])
-            print("------")
-            print(prize)
+
             assert prize["id"]
             assert prize["pokedex"]
             assert prize["pokedex"]["pokename"]
@@ -221,3 +220,51 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
 
 
         some_wrong_guess_then_correct_should_reset_tried_to_initial()
+    def test_correct_guess_should_transfer_prize_ownership(self):
+        print("[test_correct_guess_should_transfer_prize_ownership]")
+        header_authorization_value = "JWT " + self.user.jwt_access_token
+        headers = {"HTTP_AUTHORIZATION": header_authorization_value}
+
+        def get_prize_to_be_won():
+            response = self.client.get(self.path_how_many_tries_already, {}, **headers)
+            response_in_json = response.json()
+            prize = json.loads(response_in_json["prize"])
+
+            assert prize["pokedex"]["pokename"]
+            assert prize["id"]
+            self.expected_prize = { "id" : prize["id"], "pokename" : prize["pokedex"]["pokename"]}
+
+        get_prize_to_be_won()
+
+
+        def guess_correct_should_win_prize_and_refresh_prize():
+
+
+            correct_guess = ORACLE_TARGET
+            d = {"guess": correct_guess}
+
+            response = self.client.post(
+                self.path_guess,
+                data=json.dumps(d),
+                content_type="application/json",
+                **headers
+            )
+            response_in_json = response.json()
+            assert response_in_json["reply"] == "hit"
+            assert response_in_json["prize_rewarded"]
+            prize_rewarded = json.loads(response_in_json["prize_rewarded"])
+            assert prize_rewarded["trainer"] 
+            assert prize_rewarded["trainer"]["username"] == self.user.username
+            assert self.expected_prize["id"] == prize_rewarded["id"]
+            assert self.expected_prize["pokename"] == prize_rewarded["pokedex"]["pokename"]
+
+
+            assert response_in_json["prize_next"]
+            print("---aa-")
+            print(response_in_json["prize_next"])
+            print(type(response_in_json["prize_next"]))
+            prize_next = json.loads( response_in_json["prize_next"])
+            assert prize_next["id"] != self.expected_prize["id"]
+    
+
+        guess_correct_should_win_prize_and_refresh_prize()
