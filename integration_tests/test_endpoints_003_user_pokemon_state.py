@@ -23,7 +23,7 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
         self.path_login_using_jwt = target_path["login_using_jwt"]
         self.path_how_many_tries_already = target_path["how_many_tries_already"]
         self.path_guess = target_path["guess"]
-        self.path_unowned_pokemon = target_path["unowned_pokemon"]
+        self.path_unowned_pokedex = target_path["unowned_pokedex"]
         self.path_owned_pokemon = target_path["owned_pokemon"]
 
         self.user = new_user()
@@ -85,6 +85,25 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
 
         owned_pokemon_should_be_none()
 
+        def unowned_pokedex_should_be_all_pokemons():
+
+            response = self.client.get(
+                self.path_unowned_pokedex,
+                {},
+                **headers,
+            )
+
+            assert response.status_code == status.HTTP_200_OK
+
+            response_in_json = response.json()
+
+            pokemons = response_in_json["pokedex"]
+
+            assert(len(pokemons) == 16)
+
+        unowned_pokedex_should_be_all_pokemons()
+
+
         def guess_correct():
             correct_guess = ORACLE_TARGET
             d = {"guess": correct_guess}
@@ -97,16 +116,26 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
             )
         guess_correct()
 
-            
-
-            
-
-        return
-
-        def unowned_pokemon_should_be_all_pokemons():
+        def owned_pokemon_should_be_one():
 
             response = self.client.get(
-                self.path_unowned_pokemon,
+                self.path_owned_pokemon,
+                {},
+                **headers,
+            )
+            assert response.status_code == status.HTTP_200_OK
+            response_in_json = response.json()
+            pokemons = json.loads(response_in_json["pokemons"])
+            assert len(pokemons) == 1
+        
+        owned_pokemon_should_be_one()
+            
+
+
+        def unowned_pokedex_should_be_all_pokemons_except_prize_rewarded():
+
+            response = self.client.get(
+                self.path_unowned_pokedex,
                 {},
                 **headers,
             )
@@ -115,6 +144,11 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
 
             response_in_json = response.json()
 
-            pokemons = response_in_json["pokemons"]
+            pokemons = response_in_json["pokedex"]
 
-        unowned_pokemon_should_be_all_pokemons()
+            assert(len(pokemons) == 15)
+
+        unowned_pokedex_should_be_all_pokemons_except_prize_rewarded()
+
+
+

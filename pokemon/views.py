@@ -182,17 +182,23 @@ def owned_pokemon(request: HttpRequest) -> HttpResponse:
     return JsonResponse(status=500)
 
 
-def unowned_pokemon(request: HttpRequest) -> HttpResponse:
-    print("[unowned_pokemon]")
+def unowned_pokedex(request: HttpRequest) -> HttpResponse:
+    print("[unowned_pokedex]")
     if request.method == "GET":
         try:
             (user, _) = a.authenticate(request)
 
-            trained_pokemons = Pokemon.objects.filter(~Q(trainer=user))
+            pokemons = Pokemon.objects.filter(Q(trainer=user)).select_related('pokedex')
 
-            data = {"pokemons": serializers.serialize("json", trained_pokemons)}
 
-            return JsonResponse(data, status=200)
+
+            pokedex_ids = set()
+
+            [pokedex_ids.add(pokemon.pokedex.id) for pokemon in pokemons]
+
+            pokedex_not =[ pokedex.pokename for pokedex in Pokedex.objects.exclude(id__in=pokedex_ids)]
+
+            return JsonResponse({"pokedex" : pokedex_not}, status=200)
         except Exception as err:
             print(err)
             return JsonResponse({}, status=400)

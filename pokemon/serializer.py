@@ -11,6 +11,7 @@ class PokedexSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pokedex
         fields = ["pokename"]
+        
 class PokemonSerializer(serializers.ModelSerializer):
     pokedex = PokedexSerializer( read_only = True)
     trainer = UserSerializer()
