@@ -57,7 +57,7 @@ def how_many_tries_already(request: HttpRequest) -> HttpResponse:
     try:
         (user, _) = a.authenticate(request)
 
-        game, _ = GuessGame.objects.get_or_create(trainer=user.username, defaults ={"target":random_guessing_number_target()})
+        game, _ = GuessGame.objects.get_or_create(trainer=user, defaults ={"target":random_guessing_number_target()})
 
         data = {"tried": game.tried}
 
@@ -93,7 +93,7 @@ def guess(request: HttpRequest) -> HttpResponse:
 
             body_in_json = json.loads(request.body)
 
-            game, _ = GuessGame.objects.get_or_create(trainer=user.username, defaults ={"target":random_guessing_number_target()})
+            game, _ = GuessGame.objects.get_or_create(trainer=user, defaults ={"target":random_guessing_number_target()})
 
             if "guess" in body_in_json:
                 guess = body_in_json["guess"]
@@ -129,7 +129,7 @@ def unowned_pokemon(request: HttpRequest) -> HttpResponse:
             (user, _) = a.authenticate(request)
             username = user.username
 
-            game, _ = Pokedex.objects.get(trainer=user.username, defaults ={"target":random_guessing_number_target()})
+            game, _ = Pokedex.objects.get(trainer=user, defaults ={"target":random_guessing_number_target()})
 
 
             data = {"tried": game.tried}

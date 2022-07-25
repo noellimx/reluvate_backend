@@ -1,5 +1,6 @@
 from django.db import models
 
+from django.conf import settings
 
 class DummyModel(models.Model):
 
@@ -36,9 +37,9 @@ class GuessGame(models.Model):
 
     target = models.IntegerField()
     tried = models.IntegerField(choices=Tried.choices, default=Tried.NOT_YET)
-    trainer = models.CharField(max_length=255)
+    trainer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
 class Pokemon(models.Model):
-    trainer = models.CharField(max_length=255)
+    trainer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     pokedex_id = models.IntegerField()
