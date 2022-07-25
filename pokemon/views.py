@@ -63,6 +63,8 @@ def new_prize_pokemon():
     prize = Pokemon.objects.create(pokedex=pokedex)
 
     return prize
+
+
 def get_game_of_user(user: settings.AUTH_USER_MODEL):
 
     game = None
@@ -72,10 +74,9 @@ def get_game_of_user(user: settings.AUTH_USER_MODEL):
         target = random_guessing_number_target()
         prize = new_prize_pokemon()
         print(f"prize {prize.id}")
-        game = GuessGame.objects.create(
-            trainer=user, prize=prize, target=target
-        )    
+        game = GuessGame.objects.create(trainer=user, prize=prize, target=target)
     return game
+
 
 def how_many_tries_already(request: HttpRequest) -> HttpResponse:
     try:
@@ -152,7 +153,12 @@ def guess(request: HttpRequest) -> HttpResponse:
                         game.tried = 0
                 game.save()
 
-            data = {"tried": game.tried, "reply": reply, "prize_next" : next_prize, "prize_rewarded" :rewarded_prize}
+            data = {
+                "tried": game.tried,
+                "reply": reply,
+                "prize_next": next_prize,
+                "prize_rewarded": rewarded_prize,
+            }
 
             return JsonResponse(data)
 
@@ -188,17 +194,18 @@ def unowned_pokedex(request: HttpRequest) -> HttpResponse:
         try:
             (user, _) = a.authenticate(request)
 
-            pokemons = Pokemon.objects.filter(Q(trainer=user)).select_related('pokedex')
-
-
+            pokemons = Pokemon.objects.filter(Q(trainer=user)).select_related("pokedex")
 
             pokedex_ids = set()
 
             [pokedex_ids.add(pokemon.pokedex.id) for pokemon in pokemons]
 
-            pokedex_not =[ pokedex.pokename for pokedex in Pokedex.objects.exclude(id__in=pokedex_ids)]
+            pokedex_not = [
+                pokedex.pokename
+                for pokedex in Pokedex.objects.exclude(id__in=pokedex_ids)
+            ]
 
-            return JsonResponse({"pokedex" : pokedex_not}, status=200)
+            return JsonResponse({"pokedex": pokedex_not}, status=200)
         except Exception as err:
             print(err)
             return JsonResponse({}, status=400)

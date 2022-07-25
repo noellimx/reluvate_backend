@@ -1,4 +1,3 @@
-
 from rest_framework import serializers
 
 
@@ -11,10 +10,12 @@ class PokedexSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pokedex
         fields = ["pokename"]
-        
+
+
 class PokemonSerializer(serializers.ModelSerializer):
-    pokedex = PokedexSerializer( read_only = True)
+    pokedex = PokedexSerializer(read_only=True)
     trainer = UserSerializer()
+
     class Meta:
         model = Pokemon
-        fields = ["id","pokedex", "trainer"]
+        fields = ["id", "pokedex", "trainer"]

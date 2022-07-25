@@ -30,12 +30,12 @@ class Pokedex(models.Model):
     )
 
 
-
-
-
 class Pokemon(models.Model):
-    trainer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
+    trainer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE
+    )
     pokedex = models.ForeignKey(Pokedex, on_delete=models.CASCADE)
+
 
 class GuessGame(models.Model):
     class Tried(models.IntegerChoices):

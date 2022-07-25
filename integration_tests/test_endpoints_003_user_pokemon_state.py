@@ -99,10 +99,9 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
 
             pokemons = response_in_json["pokedex"]
 
-            assert(len(pokemons) == 16)
+            assert len(pokemons) == 16
 
         unowned_pokedex_should_be_all_pokemons()
-
 
         def guess_correct():
             correct_guess = ORACLE_TARGET
@@ -112,8 +111,9 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
                 self.path_guess,
                 data=json.dumps(d),
                 content_type="application/json",
-                **headers
+                **headers,
             )
+
         guess_correct()
 
         def owned_pokemon_should_be_one():
@@ -127,10 +127,8 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
             response_in_json = response.json()
             pokemons = json.loads(response_in_json["pokemons"])
             assert len(pokemons) == 1
-        
-        owned_pokemon_should_be_one()
-            
 
+        owned_pokemon_should_be_one()
 
         def unowned_pokedex_should_be_all_pokemons_except_prize_rewarded():
 
@@ -146,9 +144,6 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
 
             pokemons = response_in_json["pokedex"]
 
-            assert(len(pokemons) == 15)
+            assert len(pokemons) == 15
 
         unowned_pokedex_should_be_all_pokemons_except_prize_rewarded()
-
-
-
