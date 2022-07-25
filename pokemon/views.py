@@ -2,7 +2,7 @@ from random import randint
 from django.http import HttpRequest, HttpResponse, JsonResponse
 
 from rest_framework_simplejwt import authentication as auth_
-from pokemon.models import GuessGame
+from pokemon.models import GuessGame, Pokedex, Pokemon
 
 import json
 
@@ -118,4 +118,22 @@ def guess(request: HttpRequest) -> HttpResponse:
             print(err)
             return JsonResponse({"err" : str(err)},status=400)
     else:
-        return HttpResponse(status=501)
+        return JsonResponse(status=501)
+
+
+
+
+def unowned_pokemon(request: HttpRequest) -> HttpResponse:
+    if request.method == "GET":
+        try:
+            (user, _) = a.authenticate(request)
+            username = user.username
+
+            game, _ = Pokedex.objects.get(trainer=user.username, defaults ={"target":random_guessing_number_target()})
+
+
+            data = {"tried": game.tried}
+
+            return JsonResponse(data)
+        except:
+            return JsonResponse(status=400)

@@ -5,4 +5,5 @@ target_path = {
     "check_access_jwt_valid": "/pokemon/is-my-access-token-valid/",
     "how_many_tries_already": "/pokemon/how-many-tries-already/",
     "guess": "/pokemon/guess/",
+    "unowned_pokemon": "/pokemon/unowned-pokemon/"
 }

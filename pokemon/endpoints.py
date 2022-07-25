@@ -16,4 +16,5 @@ urlpatterns = [
         name="how-many-tries-already",
     ),
     path("guess/", handlers.guess, name="guess"),
+    path("unowned-pokemon/", handlers.unowned_pokemon, name = "unowned-pokemon")
 ]

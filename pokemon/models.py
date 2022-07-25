@@ -37,3 +37,8 @@ class GuessGame(models.Model):
     target = models.IntegerField()
     tried = models.IntegerField(choices=Tried.choices, default=Tried.NOT_YET)
     trainer = models.CharField(max_length=255)
+
+
+class Pokemon(models.Model):
+    trainer = models.CharField(max_length=255)
+    pokedex_id = models.IntegerField()
