@@ -71,9 +71,23 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
         def initial_state_user_tried_0_times():
 
             response = self.client.get(self.path_how_many_tries_already, {}, **headers)
+            print(response.status_code)
             assert response.status_code == status.HTTP_200_OK
             assert response.headers["Content-Type"] == "application/json"
-            assert response.json()["tried"] == initial_state
+
+
+            response_in_json = response.json()
+            print(response_in_json)
+            assert response_in_json["tried"] == initial_state
+            assert response_in_json["prize"]
+
+            prize = json.loads(response_in_json["prize"])
+            print("------")
+            print(prize)
+            assert prize["id"]
+            assert prize["pokedex"]
+            assert prize["pokedex"]["pokename"]
+
 
         initial_state_user_tried_0_times()
 
@@ -199,7 +213,11 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
                 content_type="application/json",
                 **headers
             )
-            assert response.json()["tried"] == initial_state
             assert response.status_code == status.HTTP_200_OK
+
+            response_in_json = response.json()
+            assert response_in_json["tried"] == initial_state
+            assert response_in_json["reply"] == "hit"
+
 
         some_wrong_guess_then_correct_should_reset_tried_to_initial()

@@ -5,6 +5,8 @@ from rest_framework_simplejwt import authentication as auth_
 from pokemon.models import GuessGame, Pokedex, Pokemon
 from django.core import serializers
 from django.db.models import Q
+from django.conf import settings
+from pokemon.serializer import PokemonSerializer
 
 import json
 
@@ -56,15 +58,31 @@ def is_access_token_valid(request: HttpRequest) -> HttpResponse:
     return HttpResponse(status=401)
 
 
+
+def get_game_of_user(user: settings.AUTH_USER_MODEL):
+
+    game = None
+    try:
+        game = GuessGame.objects.get(trainer=user)
+    except:
+        target = random_guessing_number_target()
+        pokedex = Pokedex.objects.order_by("?").first()
+
+        print(f"pokedex {pokedex.id}")
+        prize = Pokemon.objects.create(pokedex=pokedex)
+        print(f"prize {prize.id}")
+        game = GuessGame.objects.create(
+            trainer=user, prize=prize, target=target
+        )    
+    return game
+
 def how_many_tries_already(request: HttpRequest) -> HttpResponse:
     try:
         (user, _) = a.authenticate(request)
 
-        game, _ = GuessGame.objects.get_or_create(
-            trainer=user, defaults={"target": random_guessing_number_target()}
-        )
-
-        data = {"tried": game.tried}
+        game = get_game_of_user(user)
+        prize = json.dumps(PokemonSerializer(game.prize).data)
+        data = {"tried": game.tried, "prize": prize}
 
         return JsonResponse(data)
 
@@ -98,9 +116,7 @@ def guess(request: HttpRequest) -> HttpResponse:
 
             body_in_json = json.loads(request.body)
 
-            game, _ = GuessGame.objects.get_or_create(
-                trainer=user, defaults={"target": random_guessing_number_target()}
-            )
+            game = get_game_of_user(user)
 
             reply = ""
             if "guess" in body_in_json:
@@ -118,7 +134,7 @@ def guess(request: HttpRequest) -> HttpResponse:
                         # TODO reward service
                 game.save()
 
-            data = {"tried": game.tried, "reply" : reply}
+            data = {"tried": game.tried, "reply": reply}
 
             return JsonResponse(data)
 
@@ -144,9 +160,8 @@ def owned_pokemon(request: HttpRequest) -> HttpResponse:
             return JsonResponse(data, status=200)
         except Exception as err:
             print(err)
-            return JsonResponse({},status=400)
+            return JsonResponse({}, status=400)
     return JsonResponse(status=500)
-
 
 
 def unowned_pokemon(request: HttpRequest) -> HttpResponse:
@@ -162,6 +177,5 @@ def unowned_pokemon(request: HttpRequest) -> HttpResponse:
             return JsonResponse(data, status=200)
         except Exception as err:
             print(err)
-            return JsonResponse({},status=400)
+            return JsonResponse({}, status=400)
     return JsonResponse(status=500)
-

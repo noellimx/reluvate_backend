@@ -30,6 +30,13 @@ class Pokedex(models.Model):
     )
 
 
+
+
+
+class Pokemon(models.Model):
+    trainer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
+    pokedex = models.ForeignKey(Pokedex, on_delete=models.CASCADE)
+
 class GuessGame(models.Model):
     class Tried(models.IntegerChoices):
         NOT_YET = 0
@@ -39,8 +46,4 @@ class GuessGame(models.Model):
     target = models.IntegerField()
     tried = models.IntegerField(choices=Tried.choices, default=Tried.NOT_YET)
     trainer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
-
-class Pokemon(models.Model):
-    trainer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    pokedex_id = models.ForeignKey(Pokedex, on_delete=models.CASCADE)
+    prize = models.ForeignKey(Pokemon, on_delete=models.CASCADE, null=False)
