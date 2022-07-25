@@ -1,6 +1,5 @@
 from random import randint
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render
 
 from rest_framework_simplejwt import authentication as auth_
 from pokemon.models import GuessGame
@@ -9,10 +8,8 @@ import json
 
 from django.conf import settings
 
-
+from integration_tests.helpers import ORACLE_TARGET
 # TODO New class for game logic
-
-ORACLE_TARGET = 99
 
 low = 0
 high = 10
@@ -60,7 +57,7 @@ def how_many_tries_already(request: HttpRequest) -> HttpResponse:
     try:
         (user, _) = a.authenticate(request)
 
-        game, _ = GuessGame.objects.get_or_create(trainer=user, defaults ={"target":random_guessing_number_target()})
+        game, _ = GuessGame.objects.get_or_create(trainer=user.username, defaults ={"target":random_guessing_number_target()})
 
         data = {"tried": game.tried}
 
@@ -94,9 +91,9 @@ def guess(request: HttpRequest) -> HttpResponse:
         try:
             (user, _) = a.authenticate(request)
 
-            print(request.body)
             body_in_json = json.loads(request.body)
-            game = GuessGame.objects.get(trainer=user)
+
+            game, _ = GuessGame.objects.get_or_create(trainer=user.username, defaults ={"target":random_guessing_number_target()})
 
             if "guess" in body_in_json:
                 guess = body_in_json["guess"]
@@ -119,6 +116,6 @@ def guess(request: HttpRequest) -> HttpResponse:
         except Exception as err:
             print("[guess] Error")
             print(err)
-            return HttpResponse(status=400)
+            return JsonResponse({"err" : str(err)},status=400)
     else:
         return HttpResponse(status=501)

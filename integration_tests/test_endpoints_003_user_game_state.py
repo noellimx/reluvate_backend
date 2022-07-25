@@ -4,16 +4,23 @@ from integration_tests.helpers import EndpointTestCase
 from rest_framework import status
 import jwt
 
+from pokemon.views import guess
+
 
 from .stub import new_user
 
 from .targets import target_path
-
+from.helpers import ORACLE_TARGET
 import json
+
+
+
 
 
 class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
     def setUp(self) -> None:
+
+        print("[Test_Story_PlayGuessingGame_WithoutRewards] setUp")
 
         self.path_register = target_path["register"]
         self.path_login_using_jwt = target_path["login_using_jwt"]
@@ -58,14 +65,14 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
 
         login_jwt()
 
-    def test_tried_state(self):
-
+    def test_tried_state_no_correct_guess(self):
+        print("[test_tried_state_no_correct_guess]")
         header_authorization_value = "JWT " + self.user.jwt_access_token
         headers = {"HTTP_AUTHORIZATION": header_authorization_value}
+        initial_state = 0
 
         def initial_state_user_tried_0_times():
 
-            initial_state = 0
 
             response = self.client.get(self.path_how_many_tries_already, {}, **headers)
             assert response.status_code == status.HTTP_200_OK
@@ -74,8 +81,8 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
 
         initial_state_user_tried_0_times()
 
-        def first_valid_guess():
-
+        def first_valid_incorrect_guess():
+            print("[first_valid_incorrect_guess]")
             end_state = 1
 
             guess = 0
@@ -92,10 +99,10 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
             assert response.json()["tried"] == end_state
             assert response.status_code == status.HTTP_200_OK
 
-        first_valid_guess()
+        first_valid_incorrect_guess()
 
-        def second_valid_guess():
-
+        def second_valid_incorrect_guess():
+            print("[second_valid_incorrect_guess]")
             end_state = 2
 
             guess = 5555
@@ -112,9 +119,10 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
             assert response.json()["tried"] == end_state
             assert response.status_code == status.HTTP_200_OK
 
-        second_valid_guess()
+        second_valid_incorrect_guess()
 
         def invalid_guess_should_not_change_tried_state():
+            print("[invalid_guess_should_not_change_tried_state]")
             response = self.client.get(self.path_how_many_tries_already, {}, **headers)
             tried = response.json()["tried"]
             end_state = tried
@@ -134,3 +142,68 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
             assert response.status_code == status.HTTP_200_OK
 
         invalid_guess_should_not_change_tried_state()
+
+        def third_valid_incorrect_guess_should_reset_tried_to_initial():
+            print("[third_valid_incorrect_guess_should_reset_tried_to_initial]")
+            guess = 0
+
+            d = {"guess": guess}
+
+            response = self.client.post(
+                self.path_guess,
+                data=json.dumps(d),
+                content_type="application/json",
+                **headers
+            )
+
+            assert response.json()["tried"] == initial_state
+            assert response.status_code == status.HTTP_200_OK
+
+        third_valid_incorrect_guess_should_reset_tried_to_initial()
+
+    def test_tried_state_correct_guess(self):
+        print("[test_tried_state_correct_guess]")
+
+        initial_state = 0
+        header_authorization_value = "JWT " + self.user.jwt_access_token
+        headers = {"HTTP_AUTHORIZATION": header_authorization_value}
+
+        def correct_guess_should_reset_tried_to_initial():
+            guess = ORACLE_TARGET
+            d = {"guess": guess}
+
+            response = self.client.post(
+                self.path_guess,
+                data=json.dumps(d),
+                content_type="application/json",
+                **headers
+            )
+
+            assert response.json()["tried"] == initial_state
+            assert response.status_code == status.HTTP_200_OK
+        correct_guess_should_reset_tried_to_initial()
+
+
+        def some_wrong_guess_then_correct_should_reset_tried_to_initial():
+            wrong_guess = 2356236
+            d = {"guess": wrong_guess}
+
+            self.client.post(
+                self.path_guess,
+                data=json.dumps(d),
+                content_type="application/json",
+                **headers
+            )
+            correct_guess = ORACLE_TARGET
+            d = {"guess": correct_guess}
+
+            response = self.client.post(
+                self.path_guess,
+                data=json.dumps(d),
+                content_type="application/json",
+                **headers
+            )
+            assert response.json()["tried"] == initial_state
+            assert response.status_code == status.HTTP_200_OK
+        
+        some_wrong_guess_then_correct_should_reset_tried_to_initial()
