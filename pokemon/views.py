@@ -73,7 +73,6 @@ def get_game_of_user(user: settings.AUTH_USER_MODEL):
     except:
         target = random_guessing_number_target()
         prize = new_prize_pokemon()
-        print(f"prize {prize.id}")
         game = GuessGame.objects.create(trainer=user, prize=prize, target=target)
     return game
 
@@ -133,8 +132,6 @@ def guess(request: HttpRequest) -> HttpResponse:
                     # TODO reward service
 
                     # set trainer of prize to owner
-                    print("asdf")
-                    print(type(game.prize))
                     game.prize.trainer = user
                     game.prize.save()
 
@@ -178,9 +175,12 @@ def owned_pokemon(request: HttpRequest) -> HttpResponse:
 
             trained_pokemons = Pokemon.objects.filter(trainer=user)
 
-            data = {"pokemons": serializers.serialize("json", trained_pokemons)}
-            print(len(data["pokemons"]))
-            print("len(data)")
+            trained_pokemons_serialized = PokemonSerializer(
+                trained_pokemons, many=True
+            ).data
+            trained_pokemons_serialized_json = json.dumps(trained_pokemons_serialized)
+
+            data = {"pokemons": trained_pokemons_serialized_json}
             return JsonResponse(data, status=200)
         except Exception as err:
             print(err)

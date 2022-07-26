@@ -117,6 +117,7 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
         guess_correct()
 
         def owned_pokemon_should_be_one():
+            print("[owned_pokemon_should_be_one]")
 
             response = self.client.get(
                 self.path_owned_pokemon,
@@ -127,6 +128,12 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
             response_in_json = response.json()
             pokemons = json.loads(response_in_json["pokemons"])
             assert len(pokemons) == 1
+
+            first_pokemon = pokemons[0]
+            assert first_pokemon["id"]
+            assert first_pokemon["pokedex"]
+            assert first_pokemon["pokedex"]["pokename"]
+            assert first_pokemon["trainer"]["username"] == self.user.username
 
         owned_pokemon_should_be_one()
 

@@ -71,12 +71,10 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
         def initial_state_user_tried_0_times():
 
             response = self.client.get(self.path_how_many_tries_already, {}, **headers)
-            print(response.status_code)
             assert response.status_code == status.HTTP_200_OK
             assert response.headers["Content-Type"] == "application/json"
 
             response_in_json = response.json()
-            print(response_in_json)
             assert response_in_json["tried"] == initial_state
             assert response_in_json["prize"]
 
@@ -144,7 +142,6 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
                 **headers
             )
 
-            print(response)
             assert response.json()["tried"] == end_state
             assert response.status_code == status.HTTP_200_OK
 
