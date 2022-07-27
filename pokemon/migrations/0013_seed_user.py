@@ -3,30 +3,20 @@
 from django.db import migrations
 
 
+_user = {"username": "user", "password": "12345"}
 
 
-_user = {
-    "username" : "user",
-    "password" : "12345"
-}
-
-
-
-def unseed_users(apps,_):
-
+def unseed_users(apps, _):
     User = apps.get_model("auth", "User")
-    user = User.get(username= _user["username"])
+    user = User.get(username=_user["username"])
     user.delete()
 
-def seed_users(apps,_):
+
+def seed_users(apps, _):
     User = apps.get_model("auth", "User")
-
     user = User.objects.create_user(_user["username"], password=_user["password"])
-
-    print("user created")
-
-    print(user)
     user.save()
+
 
 class Migration(migrations.Migration):
 
@@ -35,8 +25,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-
         migrations.RunPython(seed_users, unseed_users),
-
-
     ]

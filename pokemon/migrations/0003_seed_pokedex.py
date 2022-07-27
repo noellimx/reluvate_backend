@@ -5,6 +5,7 @@ from django.db import migrations
 
 import csv
 
+
 def seed_during_migration(apps, _):
     Pokemon = apps.get_model("pokemon", "Pokedex")
 
