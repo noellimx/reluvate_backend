@@ -7,7 +7,7 @@ poke_project
 
 # Requirements
 
-python3
+python 3.8
 pipenv
 sqlite3
 
