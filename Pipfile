@@ -11,6 +11,7 @@ djangorestframework = "*"
 django-extensions = "*"
 pyparsing = "*"
 pydot = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 autopep8 = "*"

@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-zdek3hunn5i#+^y7!zm@58r6fwuc=ne!704$k2l36u#*@2##uk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -48,9 +48,12 @@ INSTALLED_APPS = [
     "pokemon",
     "rest_framework_simplejwt",
     "django_extensions",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
