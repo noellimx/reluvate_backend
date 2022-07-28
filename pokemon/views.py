@@ -17,8 +17,8 @@ from integration_tests.helpers import ORACLE_TARGET
 
 # TODO New class for game logic
 
-low = 0
-high = 1
+low = 1
+high = 2
 
 
 def random_guessing_number_target_in_prod():
