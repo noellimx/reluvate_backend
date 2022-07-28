@@ -127,7 +127,8 @@ def guess(request: HttpRequest) -> HttpResponse:
                 guess = body_in_json["guess"]
                 if type(guess) != int:
                     guess = int(guess)
-                elif game.target == guess:
+                if game.target == guess:
+
                     game.tried = 0
                     reply = "hit"
                     # TODO reward service
@@ -138,9 +139,11 @@ def guess(request: HttpRequest) -> HttpResponse:
 
                     rewarded_prize = json.dumps(PokemonSerializer(game.prize).data)
 
-                    # update with new random pokemon
+                    # update with new random pokemon and guess target
                     prize = new_prize_pokemon()
                     game.prize = prize
+                    game.target = random_guessing_number_target()
+
                     game.save()
                     next_prize = json.dumps(PokemonSerializer(game.prize).data)
                 else:
@@ -151,7 +154,9 @@ def guess(request: HttpRequest) -> HttpResponse:
 
                         prize = new_prize_pokemon()
                         game.prize = prize
+                        game.target = random_guessing_number_target()
                         game.save()
+
                         next_prize = json.dumps(PokemonSerializer(game.prize).data)
                 game.save()
 
