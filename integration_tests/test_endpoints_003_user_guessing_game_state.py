@@ -142,8 +142,8 @@ class Test_Story_PlayGuessingGame_WithoutRewards(EndpointTestCase):
                 **headers
             )
 
-            assert response.json()["tried"] == end_state
             assert response.status_code == status.HTTP_200_OK
+            assert response.json()["tried"] == end_state
 
         invalid_guess_should_not_change_tried_state()
 

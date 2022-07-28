@@ -93,6 +93,15 @@ def how_many_tries_already(request: HttpRequest) -> HttpResponse:
         return HttpResponse(status=400)
 
 
+
+def processGuess(guess:str or int) -> int or None:
+    try:
+        if type(guess) != int:
+            return int(guess)
+        return guess
+    except:
+        return None
+    
 # guess a number
 # if valid number:
 #   1. accept and compare with target
@@ -119,16 +128,14 @@ def guess(request: HttpRequest) -> HttpResponse:
             body_in_json = json.loads(request.body)
 
             game = get_game_of_user(user)
-
             reply = ""
             rewarded_prize = None
             next_prize = None
             if "guess" in body_in_json:
-                guess = body_in_json["guess"]
-                if type(guess) != int:
-                    guess = int(guess)
-                if game.target == guess:
-
+                guess = processGuess(body_in_json["guess"])
+                if guess is None:
+                    pass
+                elif game.target == guess:
                     game.tried = 0
                     reply = "hit"
                     # TODO reward service
