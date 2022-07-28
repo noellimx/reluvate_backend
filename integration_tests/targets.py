@@ -7,4 +7,5 @@ target_path = {
     "guess": "/pokemon/guess/",
     "owned_pokemon": "/pokemon/owned-pokemon/",
     "unowned_pokedex": "/pokemon/unowned-pokedex/",
+    "remove_pokemon": "/pokemon/remove-pokemon/"
 }

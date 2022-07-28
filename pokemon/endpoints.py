@@ -18,4 +18,5 @@ urlpatterns = [
     path("guess/", handlers.guess, name="guess"),
     path("owned-pokemon/", handlers.owned_pokemon, name="owned-pokemon"),
     path("unowned-pokedex/", handlers.unowned_pokedex, name="unowned-pokedex"),
+    path("remove-pokemon/", handlers.remove_pokemon, name="remove-pokemon")
 ]

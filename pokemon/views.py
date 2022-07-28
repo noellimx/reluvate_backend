@@ -227,3 +227,26 @@ def unowned_pokedex(request: HttpRequest) -> HttpResponse:
             print(err)
             return JsonResponse({}, status=400)
     return JsonResponse(status=500)
+
+
+
+def remove_pokemon(request:HttpRequest) -> HttpResponse :
+
+    if request.method == "POST":
+        try:
+            (user, _) = a.authenticate(request)
+            body_in_json = json.loads(request.body)
+            to_release_id = body_in_json["id"]
+
+            pokemon = Pokemon.objects.get(Q(id=to_release_id))
+
+            pokemon.trainer = None
+            pokemon.save()
+
+  
+
+            return JsonResponse({"removed_id": pokemon.id}, status=200)
+        except Exception as err:
+            print(err)
+            return JsonResponse({}, status=400)
+    return JsonResponse(status=500)

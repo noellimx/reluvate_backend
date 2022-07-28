@@ -24,7 +24,9 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
         self.path_how_many_tries_already = target_path["how_many_tries_already"]
         self.path_guess = target_path["guess"]
         self.path_unowned_pokedex = target_path["unowned_pokedex"]
+        
         self.path_owned_pokemon = target_path["owned_pokemon"]
+        self.path_remove_pokemon = target_path["remove_pokemon"]
 
         self.user = new_user()
         assert self.user.username is not None
@@ -131,6 +133,8 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
 
             first_pokemon = pokemons[0]
             assert first_pokemon["id"]
+
+            self.first_pokemon_id = first_pokemon["id"]
             assert first_pokemon["pokedex"]
             assert first_pokemon["pokedex"]["pokename"]
             assert first_pokemon["trainer"]["username"] == self.user.username
@@ -154,3 +158,45 @@ class Test_Story_PlayGuessingGame_Pokemon(EndpointTestCase):
             assert len(pokemons) == 15
 
         unowned_pokedex_should_be_all_pokemons_except_prize_rewarded()
+
+
+        def remove_pokemon():
+
+
+            assert self.first_pokemon_id
+            d = {"id":self.first_pokemon_id }
+
+
+            response = self.client.post(
+                self.path_remove_pokemon,
+                data=json.dumps(d),
+                content_type="application/json",
+                **headers,
+            )
+            print(response)
+            assert response.status_code == status.HTTP_200_OK
+
+            response_in_json = response.json()
+
+            assert response_in_json["removed_id"] == self.first_pokemon_id
+
+        remove_pokemon()
+
+
+        def unowned_pokedex_should_be_all_pokemons_after_remove():
+
+            response = self.client.get(
+                self.path_unowned_pokedex,
+                {},
+                **headers,
+            )
+
+            assert response.status_code == status.HTTP_200_OK
+
+            response_in_json = response.json()
+
+            pokemons = response_in_json["pokedex"]
+
+            assert len(pokemons) == 16
+
+        unowned_pokedex_should_be_all_pokemons_after_remove()
