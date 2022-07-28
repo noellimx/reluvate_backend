@@ -99,12 +99,12 @@ def how_many_tries_already(request: HttpRequest) -> HttpResponse:
 #       1.1 If correct:
 #           - reset tried
 #           - reward prize pokemon
-#           - reset prize pokemon
+#           - reset prize pokemon and guess
 #       1.2 If wrong:
 #           - tried++
 #           If tried == 3
 #           - reset tried
-#           - reset prize pokemon
+#           - reset prize pokemon and guess
 #
 # else:
 #   -
