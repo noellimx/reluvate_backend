@@ -149,6 +149,9 @@ def guess(request: HttpRequest) -> HttpResponse:
                     game.tried += 1
                     if game.tried == 3:
                         game.tried = 0
+                        prize = new_prize_pokemon()
+                        game.prize = prize
+                        game.save()
                 game.save()
 
             data = {
