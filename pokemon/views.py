@@ -1,3 +1,4 @@
+from ast import Num
 from random import randint
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from rest_framework import status
@@ -125,7 +126,7 @@ def guess(request: HttpRequest) -> HttpResponse:
             if "guess" in body_in_json:
                 guess = body_in_json["guess"]
                 if type(guess) != int:
-                    pass
+                    guess = int(guess)
                 elif game.target == guess:
                     game.tried = 0
                     reply = "hit"
