@@ -72,3 +72,11 @@ Example ```touch ./<app>/tests/test_models.py```
 
 Example ```python manage.py test pokemon```
 
+
+
+
+# Build
+
+No production build
+
+run server in pipenv. specific address may be required i.e `./manage.py runserver "<my_address>:<my_port>"
