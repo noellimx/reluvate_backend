@@ -140,18 +140,19 @@ def guess(request: HttpRequest) -> HttpResponse:
 
                     # update with new random pokemon
                     prize = new_prize_pokemon()
-
                     game.prize = prize
                     game.save()
-
                     next_prize = json.dumps(PokemonSerializer(game.prize).data)
                 else:
                     game.tried += 1
                     if game.tried == 3:
                         game.tried = 0
+
+
                         prize = new_prize_pokemon()
                         game.prize = prize
                         game.save()
+                        next_prize = json.dumps(PokemonSerializer(game.prize).data)
                 game.save()
 
             data = {
