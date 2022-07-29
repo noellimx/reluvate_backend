@@ -1,4 +1,4 @@
-If you want to generate the schema,
+# If you want to generate the schema,
 
 
 ## From dot file to png
